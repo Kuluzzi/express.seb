@@ -1,5 +1,3 @@
-
-
 // Imports bspw. Express API
 const express = require('express')
 
@@ -25,20 +23,11 @@ var year = date_ob.getFullYear();
 
     var hours = date_ob.getHours();
 
-    res.send('<p>Current hour: ' + hours + '</p>')
+    console.log('<p>Current hour: ' + hours + '</p>')
     next();
 
 })
-/*
-server.get('/', function (req, res, next) {
-    var date_ob = new Date();
 
-    var hours = date_ob.getHours();
-
-    res.send('<p>Current hour: ' + hours + '</p>')
-    next();
-})
-*/
 server.use(
     session ({
         // session secret
@@ -53,6 +42,27 @@ server.use(
         } */  })
 );
 server.get('/', function (req, res, next) {
+    var date_ob = new Date();
+
+var day = ("0" + date_ob.getDate()).slice(-2);
+
+var month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+
+var year = date_ob.getFullYear();
+
+    res.write('<p>Todays date: ' + day + '.' + month + '.' + year + '</p>');
+    res.end()
+    next();
+}, function (req, res, next) {
+    var date_ob = new Date();
+
+    var hours = date_ob.getHours();
+
+    res.write('<p>Current hour: ' + hours + '</p>')
+    res.end()
+    next();
+
+}, function (req, res, next) {
 
     if(req.session.views) {
 
@@ -63,8 +73,13 @@ server.get('/', function (req, res, next) {
         res.end()
     } else {
         req.session.views = 1
-        res.end(' New session.')
+        res.end('<p> New session.</p>')
     }
+    next();
+}, function (req, res, next) {
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    res.write('<p>User IP: ' + ip + '</p>');
+    res.end()
     next()
 })
 
