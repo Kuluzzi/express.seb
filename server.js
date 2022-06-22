@@ -8,9 +8,7 @@ session = require('express-session')
 // neue Instanz/Applikation zum Verwenden des express Servers
 const server = express()
 
-server.use()
-
-server.get('/', function (req, res, next) {
+server.use('/', function (req, res, next) {
     var date_ob = new Date();
 
 var day = ("0" + date_ob.getDate()).slice(-2);
@@ -19,11 +17,19 @@ var month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 
 var year = date_ob.getFullYear();
 
-    res.send('<p>Todays date: ' + day + '.' + month + '.' + year + '</p>');
+    console.log('<p>Todays date: ' + day + '.' + month + '.' + year + '</p>');
 
     next();
-})
+}, function (req, res, next) {
+    var date_ob = new Date();
 
+    var hours = date_ob.getHours();
+
+    res.send('<p>Current hour: ' + hours + '</p>')
+    next();
+
+})
+/*
 server.get('/', function (req, res, next) {
     var date_ob = new Date();
 
@@ -32,7 +38,7 @@ server.get('/', function (req, res, next) {
     res.send('<p>Current hour: ' + hours + '</p>')
     next();
 })
-
+*/
 server.use(
     session ({
         // session secret
@@ -46,7 +52,7 @@ server.use(
         cookie: {
         } */  })
 );
-server.get('/', function(req, res, next) {
+server.get('/', function (req, res, next) {
 
     if(req.session.views) {
 
@@ -59,6 +65,7 @@ server.get('/', function(req, res, next) {
         req.session.views = 1
         res.end(' New session.')
     }
+    next()
 })
 
 server.listen('3000', () => console.log("Server started. Listening on Port 3000."))
